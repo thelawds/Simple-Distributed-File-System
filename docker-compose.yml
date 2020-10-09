@@ -1,0 +1,14 @@
+version: '3'
+
+services: 
+    database:
+        image: postgres
+        restart: always
+        environment: 
+            POSTGRES_DB: fsimage
+            POSTGRES_USER: miserable
+            POSTGRES_PASSWORD: s0HpYEGR
+        ports:
+            - 5432:5432
+        volumes: 
+            - ./fsimage/data:/var/lib/db

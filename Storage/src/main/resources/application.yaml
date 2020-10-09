@@ -1,0 +1,17 @@
+logging:
+  level:
+    root: info
+
+
+server:
+  port: 8793
+
+application:
+  nameNodeAddress: http://127.0.0.1:8080
+  baseDirectory: /home/miserable/temp3/
+
+spring:
+  servlet:
+    multipart:
+      max-file-size: 1000MB
+      max-request-size: 1010MB

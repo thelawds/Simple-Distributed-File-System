@@ -1,0 +1,16 @@
+spring:
+  datasource:
+    username: miserable
+    password: s0HpYEGR
+    url: jdbc:postgresql://localhost:5432/fsimage
+  jpa:
+    show-sql: true
+    hibernate:
+      ddl-auto: update
+
+logging:
+  level:
+    root: info
+
+application:
+  minimumStorageNodesNumber: 3
