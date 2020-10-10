@@ -127,4 +127,29 @@ public class FileController {
 		return new ResponseEntity<>(fileStorageService.prune(), OK);
 	}
 
+	@PostMapping("/replicate")
+	public ResponseEntity<Void> replicate(
+			@RequestParam(name = "path") String path,
+			@RequestParam(name = "executable") Boolean executable,
+			@RequestParam(name = "readable") Boolean readable,
+			@RequestParam(name = "writable") Boolean writable,
+			@RequestParam(name = "last_update") Long lastUpdate,
+			@RequestParam(name = "replica_address") String replicaAddress
+	){
+		var file = fileStorageService.getByPath(path);
+		var metadata = FileMetaData.builder()
+								   .path(path)
+								   .createReplica(false)
+								   .executable(executable)
+								   .readable(readable)
+								   .writable(writable)
+								   .lastUpdate(lastUpdate)
+								   .size(file.length())
+								   .build();
+
+		new Thread(() -> storageNodeConnectionService.uploadOnReplica(metadata, file)).start();
+
+		return new ResponseEntity<>(OK);
+	}
+
 }

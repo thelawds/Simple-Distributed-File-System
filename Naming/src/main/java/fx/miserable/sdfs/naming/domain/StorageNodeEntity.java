@@ -11,6 +11,9 @@ import java.util.HashSet;
 import java.util.Set;
 
 import static fx.miserable.sdfs.naming.domain.NodeState.OFFLINE;
+import static javax.persistence.CascadeType.*;
+import static javax.persistence.FetchType.EAGER;
+import static javax.persistence.FetchType.LAZY;
 
 @Getter
 @Setter
@@ -37,7 +40,7 @@ public class StorageNodeEntity {
 	@Column(name = "free_space")
 	private Long freeSpace;
 
-	@ManyToMany(cascade = CascadeType.ALL)
+	@ManyToMany(cascade = ALL, fetch = LAZY)
 	@JoinTable(
 			name = "file_information_to_storage_node",
 			joinColumns = @JoinColumn(name = "name"),

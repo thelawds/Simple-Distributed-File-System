@@ -7,6 +7,9 @@ import javax.persistence.*;
 import java.util.HashSet;
 import java.util.Set;
 
+import static javax.persistence.CascadeType.*;
+import static javax.persistence.FetchType.*;
+
 @Getter
 @Setter
 @Entity
@@ -39,7 +42,7 @@ public class FileEntity {
 	@JsonProperty("last_update")
 	private Long lastUpdate;
 
-	@ManyToMany(cascade = CascadeType.ALL)
+	@ManyToMany(cascade = ALL, fetch = EAGER)
 	@JoinTable(
 			name = "file_information_to_storage_node",
 			joinColumns = @JoinColumn(name = "id"),

@@ -45,7 +45,7 @@ public class StorageController {
 	@GetMapping("/available")
 	public ResponseEntity<StorageNodeInformation> getAvailableStorage(
 			@RequestParam(value = "address", required = false) String address,
-			@RequestParam(value = "available_space", required = true) Long availableSpace
+			@RequestParam(value = "available_space") Long availableSpace
 	) {
 		try {
 			var response = storageNodeInformationService.getAvailableStorageNode(address, availableSpace);

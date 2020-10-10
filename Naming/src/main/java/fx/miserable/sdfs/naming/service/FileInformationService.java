@@ -1,6 +1,7 @@
 package fx.miserable.sdfs.naming.service;
 
 import fx.miserable.sdfs.naming.domain.FileEntity;
+import fx.miserable.sdfs.naming.domain.NodeState;
 import fx.miserable.sdfs.naming.dto.request.FileUpdateRequest;
 import fx.miserable.sdfs.naming.exception.StorageServerNotFoundException;
 import fx.miserable.sdfs.naming.repository.FileInformationRepository;
@@ -11,7 +12,9 @@ import org.springframework.stereotype.Service;
 
 import java.io.FileNotFoundException;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 import static java.lang.String.format;
 
@@ -31,6 +34,18 @@ public class FileInformationService {
 
 	public Set<FileEntity> getAll() {
 		return new HashSet<>(fileInformationRepository.findAll());
+	}
+
+	public List<FileEntity> getAllWithOneOnlineStorageNode() {
+		return storageNodeInformationRepository.findAllOffline().stream()
+											   .filter(this::hasNotEnoughOnlineReplicas)
+											   .collect(Collectors.toList());
+	}
+
+	private boolean hasNotEnoughOnlineReplicas(FileEntity el) {
+		return el.getStorageNodes().stream()
+				 .filter(sn -> sn.getState() == NodeState.OFFLINE)
+				 .count() == 1;
 	}
 
 	public FileEntity saveFileByDto(FileUpdateRequest fileUpdateRequest) {

@@ -8,10 +8,12 @@ import lombok.Getter;
 @AllArgsConstructor
 public enum NodeState {
 
-	@JsonProperty("ONLINE")
-	ONLINE,
-
 	@JsonProperty("OFFLINE")
-	OFFLINE;
+	OFFLINE,
+
+	@JsonProperty("ONLINE")
+	ONLINE;
+
+
 
 }
