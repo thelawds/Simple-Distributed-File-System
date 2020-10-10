@@ -42,6 +42,7 @@ public class FileEntity {
 	@JsonProperty("last_update")
 	private Long lastUpdate;
 
+	@Builder.Default
 	@ManyToMany(cascade = ALL, fetch = EAGER)
 	@JoinTable(
 			name = "file_information_to_storage_node",

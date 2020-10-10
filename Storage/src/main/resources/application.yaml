@@ -4,11 +4,11 @@ logging:
 
 
 server:
-  port: 8793
+  port: 8080
 
 application:
-  nameNodeAddress: http://127.0.0.1:8080
-  baseDirectory: /home/miserable/temp3/
+  nameNodeAddress: http://naming:8080
+  baseDirectory: /home/sdfs/
 
 spring:
   servlet:

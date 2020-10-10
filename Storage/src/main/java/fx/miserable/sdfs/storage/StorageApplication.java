@@ -1,5 +1,6 @@
 package fx.miserable.sdfs.storage;
 
+import fx.miserable.sdfs.storage.service.FileStorageService;
 import fx.miserable.sdfs.storage.service.NamingNodeConnectionService;
 import fx.miserable.sdfs.storage.settings.ApplicationProperties;
 import lombok.AllArgsConstructor;
@@ -14,6 +15,7 @@ import org.springframework.context.annotation.Bean;
 @EnableConfigurationProperties({ApplicationProperties.class})
 public class StorageApplication {
 	private final NamingNodeConnectionService namingNodeConnectionService;
+	private final FileStorageService fileStorageService;
 
 	public static void main(String[] args) {
 		SpringApplication.run(StorageApplication.class, args);
@@ -22,6 +24,7 @@ public class StorageApplication {
 	@Bean
 	public CommandLineRunner runner(){
 		return (args) -> {
+			fileStorageService.prune();
 			namingNodeConnectionService.initialize();
 		};
 	}

@@ -33,6 +33,7 @@ public class StorageNodeEntity {
 	@Column(name = "address", unique = true)
 	private String address;
 
+	@Builder.Default
 	@Column(name = "state")
 	@Enumerated(EnumType.ORDINAL)
 	private NodeState state = OFFLINE;

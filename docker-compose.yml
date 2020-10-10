@@ -12,15 +12,32 @@ services:
             - 5432:5432
         volumes:
             - ./fsimage/data:/var/lib/db
+        deploy:
+            placement:
+                constraints: [node.role == manager]
+
     naming:
-        build: ./Naming/
+        image: thelawds/naming_node
         ports:
             - 8080:8080
         depends_on:
             - database
+        deploy:
+            replicas: 1
+            restart-policy:
+                condition: on-failure
+            placement:
+                constraints: [node.role == manager]
+
     storage:
-        build: ./Storage/
+        build: thelawds/naming_node
         ports:
             - 8080:8080
         depends_on:
             - naming
+        deploy:
+            replicas: 3
+            restart-policy:
+                condition: on-failure
+            placement:
+                constraints: [node.role == worker]
