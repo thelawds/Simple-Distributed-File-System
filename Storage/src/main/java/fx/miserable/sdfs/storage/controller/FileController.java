@@ -135,7 +135,7 @@ public class FileController {
 			@RequestParam(name = "writable") Boolean writable,
 			@RequestParam(name = "last_update") Long lastUpdate,
 			@RequestParam(name = "replica_address") String replicaAddress
-	){
+	) {
 		var file = fileStorageService.getByPath(path);
 		var metadata = FileMetaData.builder()
 								   .path(path)

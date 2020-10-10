@@ -61,4 +61,9 @@ public class StorageController {
 			return new ResponseEntity<>(storageNodeInformationService.getAvailableSize(), OK);
 	}
 
+	@GetMapping("/size")
+	public ResponseEntity<Long> getAvailableSize(){
+		return new ResponseEntity<>(storageNodeInformationService.getAvailableSize(), OK);
+	}
+
 }

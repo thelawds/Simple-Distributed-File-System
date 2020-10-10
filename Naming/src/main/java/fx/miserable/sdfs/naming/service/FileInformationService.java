@@ -1,5 +1,6 @@
 package fx.miserable.sdfs.naming.service;
 
+import fx.miserable.sdfs.naming.dto.FileOrDirectoryInformation;
 import fx.miserable.sdfs.naming.domain.FileEntity;
 import fx.miserable.sdfs.naming.domain.NodeState;
 import fx.miserable.sdfs.naming.dto.request.FileUpdateRequest;
@@ -11,9 +12,8 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 import java.io.FileNotFoundException;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.math.BigInteger;
+import java.util.*;
 import java.util.stream.Collectors;
 
 import static java.lang.String.format;
@@ -74,6 +74,50 @@ public class FileInformationService {
 		entity.setWritable(fileUpdateRequest.isWritable());
 		entity.setExecutable(fileUpdateRequest.isExecutable());
 		entity.setLastUpdate(fileUpdateRequest.getLastUpdate());
+	}
+
+	// TODO: refactor
+	// TODO: bug with recursive counting of files
+	public List<FileOrDirectoryInformation> getFilesByDirectory(String dir) {
+		log.info("Searching Files by Directory: {}", dir);
+
+		var directories = new HashMap<String, FileOrDirectoryInformation>();
+
+		log.info("Searching Files by Directory: {}. Files fetched: {}", dir, fileInformationRepository.findByDirectory(dir));
+
+
+		var files = fileInformationRepository.findByDirectory(dir).stream()
+											 .map((el) -> getFileOrDirectoryInformation(directories, el, dir))
+											 .filter(Objects::nonNull).collect(Collectors.toList());
+
+		files.addAll(directories.values());
+
+		log.info("Resulting files for directory {} are {}", dir, files);
+
+		return files;
+	}
+
+	// TODO: Refactor
+	private FileOrDirectoryInformation getFileOrDirectoryInformation(HashMap<String, FileOrDirectoryInformation> directories, FileEntity el, String basedir) {
+		var fileOrDir = FileOrDirectoryInformation.fromEntity(basedir, el);
+
+		log.info("Mapped file or directory with path {} to {}", el.getPath(), fileOrDir);
+
+		if (fileOrDir.isDirectory()) {
+
+			if (directories.containsKey(fileOrDir.getName())) {
+				var storedFileOrDir = directories.get(fileOrDir.getName());
+				storedFileOrDir.setFilesCount(storedFileOrDir.getFilesCount() + 1);
+				storedFileOrDir.setSize(storedFileOrDir.getSize().add(BigInteger.valueOf(el.getSize())));
+				directories.replace(fileOrDir.getName(), storedFileOrDir);
+			} else {
+				directories.put(fileOrDir.getName(), fileOrDir);
+			}
+
+			return null;
+		}
+
+		return fileOrDir;
 	}
 
 }

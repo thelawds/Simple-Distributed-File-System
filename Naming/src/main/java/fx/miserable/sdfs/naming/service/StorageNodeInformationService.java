@@ -90,6 +90,7 @@ public class StorageNodeInformationService {
 
 	public void pruneAll() {
 		repository.findAll().forEach(this::prune);
+		fileInformationRepository.deleteAll();
 	}
 
 	private void prune(StorageNodeEntity storageNodeEntity) {

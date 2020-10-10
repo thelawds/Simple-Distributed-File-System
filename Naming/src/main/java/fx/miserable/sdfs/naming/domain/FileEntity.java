@@ -50,4 +50,12 @@ public class FileEntity {
 	)
 	private Set<StorageNodeEntity> storageNodes = new HashSet<>();
 
+	@Override
+	public String toString() {
+		return "fx.miserable.sdfs.naming.domain.FileEntity{" +
+				"id=" + id +
+				", size=" + size +
+				", path='" + path + '\'' +
+				'}';
+	}
 }
