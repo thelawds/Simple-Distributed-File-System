@@ -15,6 +15,8 @@ docker pull thelawds/naming_node
 
 Initialize the docker swarm and then use ```docker stack deploy -c docker-compose.yml SDFS```.
 
+Client can be executed only from scratch!
+
 ## From scratch
 
 Build the sources using your IDE or [Gradle](https://gradle.org/). You might want to change some parameters in:
@@ -25,7 +27,7 @@ Build the sources using your IDE or [Gradle](https://gradle.org/). You might wan
 
 For more information visit [this](https://docs.spring.io/spring-boot/docs/current/reference/html/spring-boot-features.html#boot-features-external-config-yaml) page
 
-Then you can run the builded applications using ```java -jar /Naming/build/libs/naming-0.0.1-SNAPSHOT.jar``` and ```java -jar /Storage/build/libs/storage-0.0.1-SNAPSHOT.jar```.
+Then you can run the builded applications using ```java -jar /Naming/build/libs/naming-0.0.1-SNAPSHOT.jar```, ```java -jar /Storage/build/libs/storage-0.0.1-SNAPSHOT.jar``` and ```java -jar /Client/build/libs/client-0.0.1-SNAPSHOT.jar```.
 
 # Architectural diagrams
 1) When Client want to do some operation in the system it connects to the Naming Server and request the IP adress of the Storage Node. Naming server randomly choose the Storage through all available Servers.
