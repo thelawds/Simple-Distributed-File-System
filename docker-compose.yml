@@ -26,7 +26,15 @@ services:
                 constraints: [node.role == manager]
 
     storage:
+<<<<<<< Updated upstream
+<<<<<<< Updated upstream
         image: thelawds/storage_node
+=======
+        build: thelawds/storage_node
+>>>>>>> Stashed changes
+=======
+        build: thelawds/storage_node
+>>>>>>> Stashed changes
         ports:
             - 8081:8081
         depends_on:
