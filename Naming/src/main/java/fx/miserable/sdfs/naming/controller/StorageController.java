@@ -10,6 +10,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 
+import java.io.FileNotFoundException;
 import java.util.List;
 
 import static fx.miserable.sdfs.naming.domain.StorageNodeEntity.fromStorageNodeInformation;
@@ -40,6 +41,18 @@ public class StorageController {
 		return new ResponseEntity<>(
 				fromEntities(storageNodeInformationService.getAll()), OK
 		);
+	}
+
+	@GetMapping("/for-file")
+	public ResponseEntity<StorageNodeInformation> getStorageForFile(
+			@RequestParam(value = "path") String path
+	){
+		try {
+			var response = this.storageNodeInformationService.getAvailableStorageNodeForPath(path);
+			return new ResponseEntity<>(fromEntity(response), OK);
+		} catch (NotEnoughStorageServersException | FileNotFoundException e){
+			throw new ResponseStatusException(NOT_FOUND, e.getMessage(), e);
+		}
 	}
 
 	@GetMapping("/available")

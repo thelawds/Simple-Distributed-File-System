@@ -4,11 +4,11 @@ logging:
 
 
 server:
-  port: 8080
+  port: 8081
 
 application:
   nameNodeAddress: http://naming:8080
-  baseDirectory: /home/sdfs/
+  baseDirectory: /home/ubuntu/sdfs
 
 spring:
   servlet:

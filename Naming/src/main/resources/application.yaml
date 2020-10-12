@@ -2,7 +2,7 @@ spring:
   datasource:
     username: miserable
     password: s0HpYEGR
-    url: jdbc:postgresql://database:5432/fsimage
+    url: jdbc:postgresql://localhost:5432/fsimage
   jpa:
     show-sql: true
     hibernate:

@@ -10,8 +10,6 @@ services:
             POSTGRES_PASSWORD: s0HpYEGR
         ports:
             - 5432:5432
-        volumes:
-            - ./fsimage/data:/var/lib/db
         deploy:
             placement:
                 constraints: [node.role == manager]
@@ -24,20 +22,16 @@ services:
             - database
         deploy:
             replicas: 1
-            restart-policy:
-                condition: on-failure
             placement:
                 constraints: [node.role == manager]
 
     storage:
-        build: thelawds/naming_node
+        image: thelawds/storage_node
         ports:
-            - 8080:8080
+            - 8081:8081
         depends_on:
             - naming
         deploy:
             replicas: 3
-            restart-policy:
-                condition: on-failure
             placement:
                 constraints: [node.role == worker]

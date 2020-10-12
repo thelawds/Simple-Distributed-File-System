@@ -15,6 +15,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.util.UriComponentsBuilder;
 
+import java.io.FileNotFoundException;
 import java.util.HashSet;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -174,7 +175,7 @@ public class StorageNodeInformationService {
 	private StorageNodeEntity getStoringNode(FileEntity fileEntity) {
 		return fileEntity.getStorageNodes().stream().filter(el -> el.getState() == ONLINE)
 						 .findFirst().orElseThrow(() -> new NotEnoughStorageServersException(format(
-						"There are no storage servers currecntly available for file %s",
+						"There are no storage servers currently available for file %s",
 						FileInformation.fromEntity(fileEntity).toString()
 				)));
 	}
@@ -182,5 +183,13 @@ public class StorageNodeInformationService {
 
 	public void dropAllOffline() {
 		repository.dropAllOffline();
+	}
+
+	public StorageNodeEntity getAvailableStorageNodeForPath(String path) throws FileNotFoundException {
+		var file = fileInformationRepository.findByPath(path).orElseThrow(FileNotFoundException::new);
+		return file.getStorageNodes().stream().filter(el -> el.getState() == ONLINE).findAny()
+				   .orElseThrow(() -> new NotEnoughStorageServersException(format(
+						   "There are no storage servers currently available for file %s", path
+				   )));
 	}
 }

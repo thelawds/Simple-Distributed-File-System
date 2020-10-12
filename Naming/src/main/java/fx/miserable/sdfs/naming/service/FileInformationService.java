@@ -1,15 +1,20 @@
 package fx.miserable.sdfs.naming.service;
 
-import fx.miserable.sdfs.naming.dto.FileOrDirectoryInformation;
 import fx.miserable.sdfs.naming.domain.FileEntity;
 import fx.miserable.sdfs.naming.domain.NodeState;
+import fx.miserable.sdfs.naming.dto.FileOrDirectoryInformation;
 import fx.miserable.sdfs.naming.dto.request.FileUpdateRequest;
 import fx.miserable.sdfs.naming.exception.StorageServerNotFoundException;
 import fx.miserable.sdfs.naming.repository.FileInformationRepository;
 import fx.miserable.sdfs.naming.repository.StorageNodeInformationRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpMethod;
 import org.springframework.stereotype.Service;
+import org.springframework.web.client.RestTemplate;
+import org.springframework.web.util.UriComponentsBuilder;
 
 import java.io.FileNotFoundException;
 import java.math.BigInteger;
@@ -83,7 +88,8 @@ public class FileInformationService {
 
 		var directories = new HashMap<String, FileOrDirectoryInformation>();
 
-		log.info("Searching Files by Directory: {}. Files fetched: {}", dir, fileInformationRepository.findByDirectory(dir));
+		log.info("Searching Files by Directory: {}. Files fetched: {}", dir, fileInformationRepository
+				.findByDirectory(dir));
 
 
 		var files = fileInformationRepository.findByDirectory(dir).stream()
@@ -108,7 +114,8 @@ public class FileInformationService {
 			if (directories.containsKey(fileOrDir.getName())) {
 				var storedFileOrDir = directories.get(fileOrDir.getName());
 				storedFileOrDir.setFilesCount(storedFileOrDir.getFilesCount() + 1);
-				storedFileOrDir.setSize(storedFileOrDir.getSize().add(BigInteger.valueOf(el.getSize())));
+				storedFileOrDir
+						.setSize(storedFileOrDir.getSize().add(BigInteger.valueOf(el.getSize())));
 				directories.replace(fileOrDir.getName(), storedFileOrDir);
 			} else {
 				directories.put(fileOrDir.getName(), fileOrDir);
@@ -118,6 +125,36 @@ public class FileInformationService {
 		}
 
 		return fileOrDir;
+	}
+
+	// TODO: REFACTOR!!!!!!!!
+	public void delete(String path) {
+		var entity = fileInformationRepository.findByPath(path).orElseGet(FileEntity::new);
+
+		var rt = new RestTemplate();
+
+		entity.getStorageNodes().forEach(el -> {
+			var uri = UriComponentsBuilder.fromUriString(el.getAddress() + "/file/delete")
+										  .queryParam("path", path)
+										  .build().toUriString();
+
+			try {
+				rt.exchange(
+						uri,
+						HttpMethod.DELETE,
+						new HttpEntity<>(new HttpHeaders()),
+						String.class
+				);
+			} catch (Exception e) {
+				log.error(
+						"Deletion of {} on node {} was not successful. Error {}.",
+						entity.getPath(), el.getAddress(), e.getMessage()
+				);
+			}
+
+			fileInformationRepository.delete(entity);
+		});
+
 	}
 
 }

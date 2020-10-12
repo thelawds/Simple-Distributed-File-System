@@ -54,6 +54,19 @@ public class FileController {
 		}
 	}
 
+	@DeleteMapping("/delete")
+	public ResponseEntity<FileInformation> deleteFile(
+			@RequestParam(name = "path") String path
+	) {
+		try {
+			var file = fileInformationService.getFileByPath(path);
+			fileInformationService.delete(path);
+			return new ResponseEntity<>(fromEntity(file), OK);
+		} catch (FileNotFoundException e) {
+			throw new ResponseStatusException(NOT_FOUND, e.getMessage(), e);
+		}
+	}
+
 	@GetMapping("/information-all")
 	public ResponseEntity<Set<FileInformation>> getAllFiles() {
 		return new ResponseEntity<>(fromEntitySet(fileInformationService.getAll()), OK);
