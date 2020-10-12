@@ -70,3 +70,15 @@ Anna Gorb - SE_02:
 - Docker Files
 - Writing Client
 - Documentation
+
+# Good Choices and reasons for them:
+
+## HTTP REST Communication
+We have chosen REST architectural pattern over HTTP, because it is very simple to implement and there are plenty of frameworks available. Unfortunately, usage of http creates some overhead on file transmission.
+
+## One Point of Failure
+There is only one point of failure in the system - naming node. It is very easy to implement and practice of  GFS and HDFS has shown that this approach is reliable enough.
+
+## Naming server checks the availability of all the nodes in the system
+
+Such a decision is easy to implement and have an advantage that SDFS user can moderate the rate with which Naming server asks Storage servers about their state, which helps to moderate the Naming node's performance. 
