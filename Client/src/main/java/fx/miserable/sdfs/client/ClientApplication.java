@@ -57,7 +57,7 @@ public class ClientApplication {
 						log.info("info <path> - Get Information about file");
 						log.info("init - Prune all storage nodes and see available size");
 					}
-					default -> log.error("Sorry not implemented!");
+					default -> log.error("Sorry, not implemented!");
 				}
 
 			}
@@ -126,8 +126,8 @@ public class ClientApplication {
 			log.info("File sent");
 		} else {
 			log.info("Downloading file...");
-			var file = new File(cmd[3]);
-			var path = cmd[2];
+			var file = new File(cmd[2]);
+			var path = cmd[1];
 
 			var currPath = String.join("/", this.cdir);
 			this.cd(new String[]{"cd", path});
@@ -160,7 +160,10 @@ public class ClientApplication {
 
 	private void ls(String[] cmd) {
 
-		var path = String.join("/", this.cdir).equals("") ? "" : String.join("/", this.cdir) + "/";
+		var path = String.join("/", this.cdir).equals("")
+				   ? ""
+				   : String.join("/", this.cdir) + "/";
+
 		var files_dirs = namingNodeConnectionService.getFilesAndFolders(path);
 
 		var dirs = files_dirs.stream().filter(FileOrDirectoryInformation::isDirectory)

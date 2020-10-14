@@ -18,6 +18,7 @@ import org.springframework.web.util.UriComponentsBuilder;
 
 import java.io.File;
 import java.io.FileOutputStream;
+import java.nio.file.Files;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
@@ -29,7 +30,7 @@ import static org.springframework.http.MediaType.MULTIPART_FORM_DATA;
 @RequiredArgsConstructor
 public class NamingNodeConnectionService {
 
-	private final String namingNodeAddress = "http://35.181.4.165:8080";
+	private final String namingNodeAddress = "http://15.237.80.160:8080";
 	private final RestTemplate restTemplate = new RestTemplate();
 
 	public List<FileInformation> getAll() {
@@ -153,16 +154,18 @@ public class NamingNodeConnectionService {
 					.queryParam("path", fullpath)
 					.build().toUriString();
 
-			var is = restTemplate.exchange(
+			var res = restTemplate.exchange(
 					uri,
 					HttpMethod.GET,
 					new HttpEntity<>(new HttpHeaders()),
-					InputStreamResource.class
-			).getBody().getInputStream();
+					byte[].class
+			);
 
-			file.createNewFile();
-			var os = new FileOutputStream(file);
-			is.transferTo(os);
+			if (res.getStatusCode().is2xxSuccessful()){
+				file.createNewFile();
+				var os = new FileOutputStream(file);
+				os.write(Objects.requireNonNull(res.getBody()));
+			}
 
 		} catch (Exception e) {
 			log.error("Downloading file was unsuccessful. Exception {}. Retrying", e.getMessage());
